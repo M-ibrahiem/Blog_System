@@ -6,6 +6,7 @@
                     <div class="card col-12">
                         <div class="card-body pa-0">
                             <div class="table-wrap">
+                                <a href="{{ route('dashboard.setting.create') }}" class="btn btn-info"> add new </a>
                                 <div class="table-responsive">
                                     <table class="table table-hover mb-0">
                                         <thead>
