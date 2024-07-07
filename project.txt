@@ -1,0 +1,26 @@
+ this is blog system
+
+1- use laravel translatble
+    1- composer require astrotomic/laravel-translatable
+    2- php artisan vendor:publish --tag=translatable
+
+2 migration
+
+    1- php artisan make:model category -mcr
+    2- php artisan make:model categoryTranslation -m
+
+    1- php artisan make:model Post -mcr
+    2- php artisan make:model PostTranslation -m
+
+    1- php artisan make:model Setting -mcr
+    2- php artisan make:model SettingTranslation -m
+
+3- MCamara
+4- breeze
+5- reCaptcha
+6 add dashboard
+7 add role
+8- add buttons in header 
+
+
+
