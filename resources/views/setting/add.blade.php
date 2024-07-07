@@ -1,6 +1,6 @@
 @extends('custom layouts.dash.app')
 
-@section('title', 'settings')
+@section('title', 'Settings')
 @section('content')
 
 <div class="row">
@@ -53,7 +53,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-default">Facebook</span>
                                 </div>
-                                <input type="text" name="facebook" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                <input type="text" name="facebook" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{ old('facebook') }}">
                             </div>
                             @error('facebook')
                                 <span class="text-danger">{{ $message }}</span>
@@ -65,7 +65,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-default">LinkedIn</span>
                                 </div>
-                                <input type="text" name="linkedin" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                <input type="text" name="linkedin" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{ old('linkedin') }}">
                             </div>
                             @error('linkedin')
                                 <span class="text-danger">{{ $message }}</span>
@@ -77,7 +77,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-default">Phone</span>
                                 </div>
-                                <input type="text" name="phone" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                <input type="text" name="phone" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{ old('phone') }}">
                             </div>
                             @error('phone')
                                 <span class="text-danger">{{ $message }}</span>
@@ -89,7 +89,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-default">Email</span>
                                 </div>
-                                <input type="email" name="email" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                <input type="email" name="email" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{ old('email') }}">
                             </div>
                             @error('email')
                                 <span class="text-danger">{{ $message }}</span>
@@ -100,9 +100,9 @@
                             <div class="card-header pa-0">
                                 <div class="nav nav-tabs nav-light nav-justified" id="dash-tab" role="tablist">
                                     @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-                                        <a class="d-flex align-items-center justify-content-center nav-item nav-link{{ $loop->index == 0 ? 'active show' : ''}}"
-                                        id="dash-tab-{{ $localeCode }}" data-toggle="tab" href="#nav-dash-{{ $localeCode }}"
-                                        role="tab" aria-selected="false">
+                                        <a class="d-flex align-items-center justify-content-center nav-item nav-link {{ $loop->index == 0 ? 'active show' : '' }}"
+                                            id="dash-tab-{{ $localeCode }}" data-toggle="tab" href="#nav-dash-{{ $localeCode }}"
+                                            role="tab" aria-selected="false">
                                             <div class="d-flex">
                                                 <div>
                                                     <span class="d-block mb-5">
@@ -117,22 +117,22 @@
 
                             <div class="card-body">
                                 <div class="tab-content" id="nav-tabContent">
-                                @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-                                        <div class="tab-pane fade{{ $loop->index == 0 ? 'active show' : ''}}  " id="nav-dash-{{ $localeCode }}" role="tabpanel" aria-labelledby="dash-tab-{{ $localeCode }}">
+                                    @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                        <div class="tab-pane fade {{ $loop->index == 0 ? 'active show' : '' }}" id="nav-dash-{{ $localeCode }}" role="tabpanel" aria-labelledby="dash-tab-{{ $localeCode }}">
                                             <div class="form-group">
                                                 <label for="title-{{ $localeCode }}">Title {{ $localeCode }}</label>
-                                                <input type="text" class="form-control" id="title-{{ $localeCode }}" name="title[{{ $localeCode }}]" placeholder="Enter title">
+                                                <input type="text" class="form-control" id="title-{{ $localeCode }}" name="{{ $localeCode }}[title]" placeholder="Enter title" value="{{ old('title.' . $localeCode) }}">
+                                                @error("{{ $localeCode }}[title]")
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
-                                            @error('title.' . $localeCode)
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
                                             <div class="form-group">
                                                 <label for="content-{{ $localeCode }}">Content</label>
-                                                <textarea class="form-control" id="content-{{ $localeCode }}" name="content[{{ $localeCode }}]" rows="3" placeholder="Enter content"></textarea>
+                                                <textarea class="form-control" id="content-{{ $localeCode }}" name="{{ $localeCode }}[content]" rows="3" placeholder="Enter content">{{ old('content.' . $localeCode) }}</textarea>
+                                                @error("{{ $localeCode }}[content]")
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
-                                            @error('content.' . $localeCode)
-                                            <span class="text-danger">{{ $message }}</span>
-                                            @enderror
                                         </div>
                                     @endforeach
                                 </div>
@@ -141,8 +141,10 @@
 
                         <button class="btn btn-primary" type="submit">Save Settings</button>
                     </form>
-
                 </div>
             </div>
         </section>
-    @endsection
+    </div>
+</div>
+
+@endsection

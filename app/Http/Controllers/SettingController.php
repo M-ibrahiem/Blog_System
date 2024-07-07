@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -14,7 +15,7 @@ class SettingController extends Controller
     public function index()
     {
         $data = Setting::all();
-        return view('setting.all',compact('data'));
+        return view('setting.all', compact('data'));
     }
 
     /**
@@ -23,7 +24,6 @@ class SettingController extends Controller
     public function create()
     {
         return view('setting.add');
-
     }
 
     /**
@@ -31,51 +31,59 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-
         $locales = LaravelLocalization::getSupportedLocales();
-        $rules = [
-            'logo' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'favicon' => 'required|image|file|max:2048',
-            'facebook' => 'required',
-            'linkedin' => 'required',
-            'phone' => 'required|regex:/^[0-9]{10,15}$/',
-            'email' => 'required|email',
-            'title.*' => 'required|string|max:255',
-            'content.*' => 'required|string',
 
+        $rules = [
+            'logo' => 'required|image',
+            'favicon' => 'required|image',
+            'facebook' => 'required|string',
+            'linkedin' => 'required|string',
+            'phone' => 'required|string',
+            'email' => 'required|string',
         ];
-        // Save other settings
+
         foreach ($locales as $localeCode => $properties) {
             $rules["{$localeCode}.title"] = 'required|string';
             $rules["{$localeCode}.content"] = 'required|string';
         }
 
-        $request->validate($rules);
-
-        $allSettingsWithoutImages = $request->except(['logo','favicon']);
-        // setting::create($allSettingsWithoutImages);
-        Setting::create($request->all());
-
-            //  // Handle file uploads
-            //  if ($request->hasFile('logo')) {
-            //     $validatedData['logo'] = $request->file('logo')->store('logos', 'public');
-            // }
-
-            // if ($request->hasFile('favicon')) {
-            //     $validatedData['favicon'] = $request->file('favicon')->store('favicons', 'public');
-            // }
+        // Validate the request
+        $validated = $request->validate($rules);
 
 
-        // return redirect()->route('dashboard.setting.index')->with('success', 'Settings updated successfully.');
+        // Extract all settings excluding images
+        $allSettingsWithoutImages = $request->except(['logo', 'favicon']);
+
+           // Save settings to the database
+           $setting = Setting::create($allSettingsWithoutImages);
+      // Store images using Spatie Media Library
+      if ($request->hasFile('logo')) {
+        $uploadlogo =  $setting->addMediaFromRequest('logo')->toMediaCollection('logos');
+        $setting->update([
+            'logo' => $uploadlogo->getUrl()
+            ]);
+
     }
 
+    if ($request->hasFile('favicon')) {
+        $uploadfavicon = $setting->addMediaFromRequest('favicon')->toMediaCollection('favicons');
+        $setting->update([
+            'logo' => $uploadfavicon->getUrl()
+        ]);
+    }
+
+
+
+        // Redirect to the settings index with success message
+        return redirect()->route('dashboard.setting.index')->with('success', 'Settings updated successfully.');
+    }
 
     /**
      * Display the specified resource.
      */
     public function show(Setting $setting)
     {
-        //
+        // Implementation if needed
     }
 
     /**
@@ -83,7 +91,7 @@ class SettingController extends Controller
      */
     public function edit(Setting $setting)
     {
-        //
+        // Implementation if needed
     }
 
     /**
@@ -91,7 +99,7 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        //
+        // Implementation if needed
     }
 
     /**
@@ -99,6 +107,6 @@ class SettingController extends Controller
      */
     public function destroy(Setting $setting)
     {
-        //
+        // Implementation if needed
     }
 }
