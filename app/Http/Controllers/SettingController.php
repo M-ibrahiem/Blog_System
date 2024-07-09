@@ -57,6 +57,7 @@ class SettingController extends Controller
            // Save settings to the database
            $setting = Setting::create($allSettingsWithoutImages);
       // Store images using Spatie Media Library
+
       if ($request->hasFile('logo')) {
         $uploadlogo =  $setting->addMediaFromRequest('logo')->toMediaCollection('logos');
         $setting->update([
@@ -68,7 +69,7 @@ class SettingController extends Controller
     if ($request->hasFile('favicon')) {
         $uploadfavicon = $setting->addMediaFromRequest('favicon')->toMediaCollection('favicons');
         $setting->update([
-            'logo' => $uploadfavicon->getUrl()
+            'favicon' => $uploadfavicon->getUrl()
         ]);
     }
 
@@ -91,7 +92,8 @@ class SettingController extends Controller
      */
     public function edit(Setting $setting)
     {
-        // Implementation if needed
+        return view('setting.edit',compact('setting'));
+
     }
 
     /**
@@ -99,7 +101,54 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        // Implementation if needed
+        $locales = LaravelLocalization::getSupportedLocales();
+
+        $rules = [
+            'logo' => 'image',
+            'favicon' => 'image',
+            'facebook' => 'required|string',
+            'linkedin' => 'required|string',
+            'phone' => 'required|string',
+            'email' => 'required|string',
+        ];
+
+        foreach ($locales as $localeCode => $properties) {
+            $rules["{$localeCode}.title"] = 'required|string';
+            $rules["{$localeCode}.content"] = 'required|string';
+        }
+
+        // Validate the request
+        $validated = $request->validate($rules);
+
+
+        // Extract all settings excluding images
+        $allSettingsWithoutImages = $request->except(['logo', 'favicon']);
+
+           // Save settings to the database
+           $setting->update($allSettingsWithoutImages);
+      // Store images using Spatie Media Library
+
+      if ($request->hasFile('logo')) {
+        $oldLogo = $setting->media;
+        $oldLogo[0]->delete();
+        $uploadlogo =  $setting->addMediaFromRequest('logo')->toMediaCollection('logos');
+        $setting->update([
+            'logo' => $uploadlogo->getUrl()
+            ]);
+
+    }
+
+    if ($request->hasFile('favicon')) {
+        $oldFav = $setting->media;
+        $oldFav[1]->delete();
+        $uploadfavicon = $setting->addMediaFromRequest('favicon')->toMediaCollection('favicons');
+        $setting->update([
+            'favicon' => $uploadfavicon->getUrl()
+        ]);
+     }
+
+        // Redirect to the settings index with success message
+        return redirect()->route('dashboard.setting.index')->with('success', 'Settings updated successfully.');
     }
 
     /**
@@ -107,6 +156,11 @@ class SettingController extends Controller
      */
     public function destroy(Setting $setting)
     {
-        // Implementation if needed
+        $setting->clearMediaCollection('logo');
+        $setting->clearMediaCollection('favicon');
+        $setting->delete();
+        return redirect()->route('dashboard.setting.index')->with('success', 'Settings updated successfully.');
     }
+
+
 }

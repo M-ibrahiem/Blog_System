@@ -21,5 +21,11 @@ class Setting extends Model implements TranslatableContract, HasMedia
     public $translatedAttributes = ['title', 'content'];
     protected $fillable = ['logo','favicon','facebook','linkedin','phone','email'];
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logos')->singleFile();
+        $this->addMediaCollection('favicons')->singleFile();
+    }
+
 }
 
