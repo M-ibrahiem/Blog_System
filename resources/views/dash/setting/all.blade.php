@@ -1,9 +1,9 @@
-@extends('custom layouts.dash.app')
+@extends('dash.custom layouts.dash.app')
 
 @section('title', 'Settings')
 @section('content')
 
-<div class="row">
+{{-- <div class="row"> --}}
     <div class="col-xl-12">
         <section class="hk-sec-wrapper">
             <h5 class="hk-sec-title">Settings</h5>
@@ -53,7 +53,7 @@
                                                     method="POST" style="display: inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    
+
                                                     <button type="submit"
                                                         class="btn btn-icon btn-danger btn-icon-style-1"
                                                         onclick="return confirm('Are you sure you want to delete this setting?')">

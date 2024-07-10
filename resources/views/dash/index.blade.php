@@ -1,4 +1,4 @@
-@extends('custom layouts.dash.app')
+@extends('dash.custom layouts.dash.app')
 
 @section('title','Dashboard')
 @section('content')

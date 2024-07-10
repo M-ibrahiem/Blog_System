@@ -26,6 +26,8 @@ License: You must have a valid license purchased only from templatemonster to le
     <link href="{{ asset('dash/vendors/jquery-toast-plugin/dist/jquery.toast.min.css') }}" rel="stylesheet" type="text/css">
 
     <!-- Custom CSS -->
+@stack('custom_css')
+    <!-- Custom CSS -->
     <link href="{{ asset('dash/dist/css/style.css') }}" rel="stylesheet" type="text/css">
 </head>
 
@@ -231,6 +233,14 @@ License: You must have a valid license purchased only from templatemonster to le
                             <a class="nav-link link-with-badge" href="{{ route('dashboard.setting.index') }}" >
                                 <span class="feather-icon"><i data-feather="package"></i></span>
                                 <span class="nav-link-text">Website Settings</span>
+                            </a>
+
+                        </li>
+                        </li>
+                        <li class="nav-item {{ request()->segment(2) == 'users' ? 'active': '' }}">
+                            <a class="nav-link link-with-badge" href="{{ route('dashboard.users.index') }}" >
+                                <span class="feather-icon"><i data-feather="package"></i></span>
+                                <span class="nav-link-text">Website Users</span>
                             </a>
 
                         </li>

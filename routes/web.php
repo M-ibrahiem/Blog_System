@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -37,6 +38,7 @@ Route::group(
 
         Route::resources([
             'setting' => SettingController::class,
+            'users' => UserController::class,
         ]);
 });
 

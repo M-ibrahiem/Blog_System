@@ -63,6 +63,9 @@
 	<!-- Toastr JS -->
     <script src="{{ asset('dash/vendors/jquery-toast-plugin/dist/jquery.toast.min.js') }}"></script>
 
+    <!-- custom JavaScript stack -->
+    @stack('custom_js')
+
     <!-- Init JavaScript -->
     <script src="{{ asset('dash/dist/js/init.js') }}"></script>
 	<script src="{{ asset('dash/dist/js/dashboard4-data.js') }}"></script>

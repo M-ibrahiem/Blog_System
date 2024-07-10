@@ -15,7 +15,7 @@ class SettingController extends Controller
     public function index()
     {
         $data = Setting::all();
-        return view('setting.all', compact('data'));
+        return view('dash.setting.all', compact('data'));
     }
 
     /**
@@ -23,7 +23,7 @@ class SettingController extends Controller
      */
     public function create()
     {
-        return view('setting.add');
+        return view('dash.setting.add');
     }
 
     /**
@@ -92,7 +92,7 @@ class SettingController extends Controller
      */
     public function edit(Setting $setting)
     {
-        return view('setting.edit',compact('setting'));
+        return view('dash.setting.edit',compact('setting'));
 
     }
 

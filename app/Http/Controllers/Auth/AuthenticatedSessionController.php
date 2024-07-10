@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
         } elseif (Auth::user()->role == 'admin') {
             return redirect('/dashboard');
         } else {
-             echo  "fuck";
+             abort(404);
         }
 
     }
