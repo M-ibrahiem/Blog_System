@@ -9,17 +9,17 @@
         let table = new DataTable('#usersTable');
     </script>
 @endpush
-@section('title', 'Users')
+@section('title', 'Category')
 @section('content')
 
     {{-- <div class="row"> --}}
     <div class="col-xl-12">
         <section class="hk-sec-wrapper">
-            <h5 class="hk-sec-title">Users</h5>
-            <p class="mb-25">List of all Users</p>
+            <h5 class="hk-sec-title">Category</h5>
+            <p class="mb-25">List of all Category</p>
             <div class="row">
                 <div class="col-sm">
-                    <a href="{{ route('dashboard.users.create') }}" class="btn btn-info mb-3">Add New</a>
+                    <a href="{{ route('dashboard.Categories.create') }}" class="btn btn-info mb-3">Add New</a>
                     <div class="table-responsive">
                         <table class="table table-hover mb-0" id="usersTable">
                             <thead>

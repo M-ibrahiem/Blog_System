@@ -244,6 +244,13 @@ License: You must have a valid license purchased only from templatemonster to le
                             </a>
 
                         </li>
+                        <li class="nav-item {{ request()->segment(2) == 'categories' ? 'active': '' }}">
+                            <a class="nav-link link-with-badge" href="{{ route('dashboard.categories.index') }}" >
+                                <span class="feather-icon"><i data-feather="package"></i></span>
+                                <span class="nav-link-text">Website categories</span>
+                            </a>
+
+                        </li>
                     </ul>
                 </div>
             </div>

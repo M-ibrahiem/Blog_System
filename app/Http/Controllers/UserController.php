@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = User::all();
+        $data = User::withTrashed()->get();
         return view('dash.user.all', compact('data'));
     }
 
@@ -35,19 +35,21 @@ class UserController extends Controller
     {
         $validate = $request->validate([
             'name' => 'required|string|max:255',
-            'role' => 'required|string|max:255'.Rule::in(['user','admin']),
-            'email' => 'required|string|email|max:255|unique:users',
+            'role' => ['required','string','max:255',
+                Rule::in(['user', 'admin']), // This is the correct way to use Rule::in
+            ],
+            'email' => 'required|string|email|max:255|unique:users,email', // Correct the unique rule
             'password' => 'required|string|min:8|confirmed',
-
         ]);
+
         User::create([
             'name' => $validate['name'],
             'role' => $validate['role'],
             'email' => $validate['email'],
-            'password' =>bcrypt( $validate['password']),
+            'password' => bcrypt($validate['password']),
         ]);
-        return redirect()->route('dashboard.users.index')->with('success', 'User created successfully');
 
+        return redirect()->route('dashboard.users.index')->with('success', 'User created successfully');
     }
 
 
@@ -75,29 +77,44 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, User $user)
-    {
-        $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'role' => 'required|string|max:255'.Rule::in(['user','admin']),
-            'email' => 'required|string|email|max:255|unique:users'. $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'role' => 'required|string|max:255',Rule::in(['user', 'admin']),
+        'email' =>'|required|string|email|max:255',Rule::unique('users', 'email')->ignore($user->id),
+        'password' => 'nullable|string|min:8|confirmed',
+    ]);
 
-        ]);
-        $user->update([
-            'name' => $validate['name'],
-            'role' => $validate['role'],
-            'email' => $validate['email'],
-            'password' => $validate['password'] ? bcrypt($validate['password']) : $user->password,
-        ]);
+    $user->update([
+        'name' => $validatedData['name'],
+        'role' => $validatedData['role'],
+        'email' => $validatedData['email'],
+        'password' => $validatedData['password'] ? bcrypt($validatedData['password']) : $user->password,
+    ]);
 
-        return redirect()->route('dashboard.users.index')->with('success', 'User updated successfully');
-    }
+    return redirect()->route('dashboard.users.index')->with('success', 'User updated successfully');
+}
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return redirect()->route('dashboard.users.index')->with('success', 'User updated successfully');
+
+    }
+    public function restore(User $user)
+    {
+        $user->restore();
+        return redirect()->route('dashboard.users.index')->with('success', 'User updated successfully');
+
+    }
+    public function erase(User $user)
+    {
+        $user->forceDelete();
+        return redirect()->route('dashboard.users.index')->with('success', 'User updated successfully');
+
     }
 }

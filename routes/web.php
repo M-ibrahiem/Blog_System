@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -27,10 +28,7 @@ Route::group(
         });
     });
 
-    Route::prefix('dashboard')
-    ->middleware(['auth', 'verified', 'dashbordAccess'])
-    ->name('dashboard.')
-    ->group(function () {
+    Route::prefix('dashboard')->middleware(['auth', 'verified', 'dashbordAccess'])->name('dashboard.')->group(function () {
 
         Route::get('/', function () {
             return view('dash.index');
@@ -39,7 +37,11 @@ Route::group(
         Route::resources([
             'setting' => SettingController::class,
             'users' => UserController::class,
+            'categories' => CategoryController::class,
         ]);
+
+    Route::get('users/restore/{user}', [UserController::class, 'restore'])->name('users.restore');
+    Route::delete('users/erase/{user}', [UserController::class, 'erase'])->name('users.erase');
 });
 
 
