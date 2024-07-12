@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -41,6 +42,10 @@ class RouteServiceProvider extends ServiceProvider
 
         Route::bind('user', function($value){
             return User::withTrashed()->where('id', $value)->firstOrFail();
+        });
+
+        Route::bind('category',function($value){
+            return Category::withTrashed()->where('id',$value)->firstOrFail();
         });
     }
 }

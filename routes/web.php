@@ -40,8 +40,12 @@ Route::group(
             'categories' => CategoryController::class,
         ]);
 
+        // soft delete
     Route::get('users/restore/{user}', [UserController::class, 'restore'])->name('users.restore');
     Route::delete('users/erase/{user}', [UserController::class, 'erase'])->name('users.erase');
+
+    Route::get('categories/restore/{category}', [categoryController::class, 'restore'])->name('categories.restore');
+    Route::delete('categories/erase/{category}', [categoryController::class, 'erase'])->name('categories.erase');
 });
 
 

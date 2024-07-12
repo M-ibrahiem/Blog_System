@@ -1,67 +1,67 @@
 @extends('dash.custom layouts.dash.app')
 
-@section('title', 'Add New User')
-@section('content')
+@section('title', 'Add Category')
 
-{{-- <div class="row"> --}}
+@section('content')
     <div class="col-xl-12">
         <section class="hk-sec-wrapper">
-            <h5 class="hk-sec-title">Add New User</h5>
-            <p class="mb-25">Fill the form to add a new user.</p>
+            <h5 class="hk-sec-title">Add New Category</h5>
+            <p class="mb-25">Fill the form below to add a new category</p>
             <div class="row">
                 <div class="col-sm">
-                    <form action="{{ route('dashboard.users.store') }}" method="POST">
+                    <form action="{{ route('dashboard.categories.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" class="form-control" id="name" placeholder="Enter name" value="{{ old('name') }}">
-                            @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                            <label for="title_en">Title (EN)</label>
+                            <input type="text" class="form-control" id="title_en" name="en[title]" value="{{ old('en.title') }}">
                         </div>
-
+                        @error('en.title')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
                         <div class="form-group">
-                            <label for="role">Role</label>
-                            <select name="role" class="form-control" id="role">
-                                <option value="">Select a Role</option>
-                                @foreach ($data as $user)
-                                    <option value="{{ $user->role }}" {{ $user->role ? 'selected' : '' }}>
-                                        {{ $user->role }}
-                                    </option>
+                            <label for="title_ar">Title (AR)</label>
+                            <input type="text" class="form-control" id="title_ar" name="ar[title]" value="{{ old('ar.title') }}">
+                        </div>
+                        @error('ar.title')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="form-group">
+                            <label for="content_en">Content (EN)</label>
+                            <textarea class="form-control" id="content_en" name="en[content]" rows="3" value="{{ old('en.content') }}"></textarea>
+                        </div>
+                        @error('en.content')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="form-group">
+                            <label for="content_ar">Content (AR)</label>
+                            <textarea class="form-control" id="content_ar" name="ar[content]" rows="3" value="{{ old('ar.content') }}"></textarea>
+                        </div>
+                        @error('ar.content')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control-file" id="image" name="image" value="{{ old('image')}}>
+                        </div>
+                        @error('image')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="form-group">
+                            <label for="parent">Parent Category</label>
+                            <select class="form-control" id="parent" name="parent" value="{{ old('parent')}}">
+                                <option value="">Main Category</option>
+                                @foreach($data as $category)
+                                    <option value="{{ $category->id }}">{{ $category->title }}</option>
                                 @endforeach
                             </select>
-                            @error('role')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
-
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" name="email" class="form-control" id="email" placeholder="Enter email" value="{{ old('email') }}">
-                            @error('email')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" name="password" class="form-control" id="password" placeholder="Enter password">
-                            @error('password')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password_confirmation">Confirm Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" id="password_confirmation" placeholder="Confirm password">
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Add User</button>
+                        @error('parent')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                        <button type="submit" class="btn btn-primary">Add Category</button>
                     </form>
                 </div>
             </div>
         </section>
     </div>
-</div>
-
 @endsection
