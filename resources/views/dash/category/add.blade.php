@@ -1,4 +1,4 @@
-@extends('dash.custom layouts.dash.app')
+@extends('custom layouts.dash.app')
 
 @section('title', 'Add Category')
 

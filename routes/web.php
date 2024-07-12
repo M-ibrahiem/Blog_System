@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -38,6 +39,7 @@ Route::group(
             'setting' => SettingController::class,
             'users' => UserController::class,
             'categories' => CategoryController::class,
+            'posts' => PostController::class,
         ]);
 
         // soft delete
@@ -46,6 +48,9 @@ Route::group(
 
     Route::get('categories/restore/{category}', [categoryController::class, 'restore'])->name('categories.restore');
     Route::delete('categories/erase/{category}', [categoryController::class, 'erase'])->name('categories.erase');
+
+    Route::get('posts/restore/{post}', [PostController::class, 'restore'])->name('posts.restore');
+    Route::delete('posts/erase/{post}', [PostController::class, 'erase'])->name('posts.erase');
 });
 
 

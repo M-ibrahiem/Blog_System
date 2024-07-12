@@ -1,4 +1,4 @@
-@extends('dash.custom layouts.dash.app')
+@extends('custom layouts.dash.app')
 
 @push('custom_css')
     <link href="https://cdn.datatables.net/v/bs4/jq-3.7.0/dt-2.0.8/datatables.min.css" rel="stylesheet">

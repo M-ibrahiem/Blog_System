@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class PostController extends Controller
 {
@@ -12,7 +14,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $data = Post::withTrashed()->get();
+        return view('dash.post.all', compact('data'));
+
     }
 
     /**
@@ -20,7 +24,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('dash.post.add', compact('categories'));
+
     }
 
     /**
@@ -28,8 +34,41 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $locales = LaravelLocalization::getSupportedLocales();
+        $rules = [
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category_id' => 'required|exists:categories,id',
+            'author' => auth()->user()->name,
+            'tags' => 'nullable|string',
+        ];
+
+        foreach ($locales as $localeCode => $properties) {
+            $rules["{$localeCode}.title"] = 'required|string|max:255';
+            $rules["{$localeCode}.content"] = 'required|string';
+            $rules["{$localeCode}.small_description"] = 'required|string|max:500';
+        }
+
+        $request->validate($rules);
+
+        $all = $request->except(['image']);
+        $post = Post::create($all);
+
+        if ($request->hasFile('image')) {
+            $upload = $post->addMediaFromRequest('image')->toMediaCollection('images');
+            $post->update([
+                'image' => $upload->getUrl()
+            ]);
+        }
+         // Handle tags
+    // if ($request->filled('tags')) {
+    //     $tags = array_map('trim', explode(',', $request->tags));
+    //     $post->syncTags($tags);
+    // }
+
+
+        return redirect()->route('dashboard.posts.index')->with('success', 'post added successfully');
     }
+
 
     /**
      * Display the specified resource.

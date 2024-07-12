@@ -32,4 +32,7 @@ class Category extends Model implements TranslatableContract, HasMedia
     {
         return $this->hasMany(Category::class, 'parent', 'id');
     }
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
 }

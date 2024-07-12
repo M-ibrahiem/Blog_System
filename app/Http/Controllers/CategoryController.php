@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data = Category::withTrashed()->with('translations', 'parentCategory')->get();
+        $data = Category::withTrashed()->get();
         return view('dash.category.all', compact('data'));
     }
 

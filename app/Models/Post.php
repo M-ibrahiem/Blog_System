@@ -18,4 +18,17 @@ class Post extends Model implements TranslatableContract
     public $translatedAttributes = ['title', 'content','small_description','tags'];
     protected $fillable = ['image'];
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images');
+    }
+    public function category(){
+        return $this->belongsTo(Category::class);
+    }
+
+        public function user()
+        {
+            return $this->belongsTo(User::class, 'user_id', 'id');
+        }
+
 }
