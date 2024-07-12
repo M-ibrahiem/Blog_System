@@ -20,8 +20,8 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $data = Category::all();
-        return view('dash.category.add', compact('data'));
+        $categories = Category::all();
+        return view('dash.category.add', compact('categories'));
     }
 
     public function store(Request $request)
@@ -86,7 +86,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, category $category)
+    public function update(Request $request, Category $category)
     {
         $locales = LaravelLocalization::getSupportedLocales();
         $rules = [
@@ -101,27 +101,24 @@ class CategoryController extends Controller
 
         $request->validate($rules);
 
-        $category = new Category();
+        // Update category parent
         $category->parent = $request->parent;
-        $category->update();
+        $category->save();
 
+        // Update translations
         foreach ($locales as $localeCode => $properties) {
             $category->translateOrNew($localeCode)->title = $request->input("{$localeCode}.title");
             $category->translateOrNew($localeCode)->content = $request->input("{$localeCode}.content");
         }
-        // dd($category);
+        $category->save();
 
-        $category->update();
-
+        // Handle image upload
         if ($request->hasFile('image')) {
             $category->clearMediaCollection('images');
-            $upload = $category->addMediaFromRequest('image')->toMediaCollection('images');
-            // $category->update([
-            //     'image' => $upload->getUrl()
-            // ]);
-
+            $category->addMediaFromRequest('image')->toMediaCollection('images');
         }
-            return redirect()->route('dashboard.categories.index')->with('success', 'Category added successfully');
+
+        return redirect()->route('dashboard.categories.index')->with('success', 'Category updated successfully');
     }
 
 
@@ -140,6 +137,7 @@ class CategoryController extends Controller
     }
     public function erase(category $category)
     {
+        $category->clearMediaCollection('images');
         $category->forceDelete();
         return redirect()->route('dashboard.categories.index')->with('success', 'Category added successfully');
     }

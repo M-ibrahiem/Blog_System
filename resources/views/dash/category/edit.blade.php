@@ -17,48 +17,33 @@
                             $translations = $category->translations->keyBy('locale')->toArray();
                         @endphp
 
-                        <div class="form-group">
-                            <label for="title_en">Title (EN)</label>
-                            <input type="text" class="form-control" id="title_en" name="en[title]" value="{{ $translations['en']['title'] ?? '' }}">
+                        @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                            <div class="form-group">
+                                <label for="title_{{ $localeCode }}">Title ({{ strtoupper($localeCode) }})</label>
+                                <input type="text" class="form-control" id="title_{{ $localeCode }}" name="{{ $localeCode }}[title]" value="{{ $translations[$localeCode]['title'] ?? '' }}">
+                            </div>
+                            @error("{$localeCode}.title")
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
 
-                        </div>
-                        @error('en.title')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-
-                        <div class="form-group">
-                            <label for="title_ar">Title (AR)</label>
-                            <input type="text" class="form-control" id="title_ar" name="ar[title]" value="{{ $translations['ar']['title'] ?? '' }}">
-                        </div>
-                        @error('ar.title')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-
-                        <div class="form-group">
-                            <label for="content_en">Content (EN)</label>
-                            <textarea class="form-control" id="content_en" name="en[content]" rows="3">{{ $translations['en']['content'] ?? '' }}</textarea>
-                        </div>
-                        @error('en.content')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-
-                        <div class="form-group">
-                            <label for="content_ar">Content (AR)</label>
-                            <textarea class="form-control" id="content_ar" name="ar[content]" rows="3">{{ $translations['ar']['content'] ?? '' }}</textarea>
-                        </div>
-                        @error('ar.content')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
+                            <div class="form-group">
+                                <label for="content_{{ $localeCode }}">Content ({{ strtoupper($localeCode) }})</label>
+                                <textarea class="form-control" id="content_{{ $localeCode }}" name="{{ $localeCode }}[content]" rows="3">{{ $translations[$localeCode]['content'] ?? '' }}</textarea>
+                            </div>
+                            @error("{$localeCode}.content")
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        @endforeach
 
                         <div class="form-group">
                             <label for="image">Image</label>
-                            <input type="file" class="form-control-file" id="image" name="image">
+                            <input type="file" class="form-control-file" id="image" name="image"onchange="showPreview(event, 'image_preview')">
                             @if($category->getFirstMediaUrl('images'))
-                                <img src="{{ $category->getFirstMediaUrl('images') }}" alt="category image" width="100">
+                                <img src="{{ $category->getFirstMediaUrl('images') }}" alt="category image" id="image_preview" width="100">
                             @endif
                         </div>
                         @error('image')
-                        <span class="text-danger">{{ $message }}</span>
+                            <span class="text-danger">{{ $message }}</span>
                         @enderror
 
                         <div class="form-group">
@@ -71,9 +56,21 @@
                             </select>
                         </div>
                         @error('parent')
-                        <span class="text-danger">{{ $message }}</span>
+                            <span class="text-danger">{{ $message }}</span>
                         @enderror
 
+                        <script>
+                            function showPreview(event, id) {
+                                let file = event.target.files[0];
+                                if (file.type.startsWith('image/')) {
+                                    let src = URL.createObjectURL(file);
+                                    let prv = document.getElementById(id);
+                                    prv.src = src;
+                                } else {
+                                    alert('Please select a valid image file.');
+                                }
+                            }
+                        </script>
                         <button type="submit" class="btn btn-primary">Update Category</button>
                     </form>
                 </div>

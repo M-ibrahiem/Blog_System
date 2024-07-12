@@ -11,57 +11,66 @@
                 <div class="col-sm">
                     <form action="{{ route('dashboard.categories.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group">
-                            <label for="title_en">Title (EN)</label>
-                            <input type="text" class="form-control" id="title_en" name="en[title]" value="{{ old('en.title') }}">
-                        </div>
-                        @error('en.title')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                        <div class="form-group">
-                            <label for="title_ar">Title (AR)</label>
-                            <input type="text" class="form-control" id="title_ar" name="ar[title]" value="{{ old('ar.title') }}">
-                        </div>
-                        @error('ar.title')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                        <div class="form-group">
-                            <label for="content_en">Content (EN)</label>
-                            <textarea class="form-control" id="content_en" name="en[content]" rows="3" value="{{ old('en.content') }}"></textarea>
-                        </div>
-                        @error('en.content')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                        <div class="form-group">
-                            <label for="content_ar">Content (AR)</label>
-                            <textarea class="form-control" id="content_ar" name="ar[content]" rows="3" value="{{ old('ar.content') }}"></textarea>
-                        </div>
-                        @error('ar.content')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
+
+                        @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                            <div class="form-group">
+                                <label for="title_{{ $localeCode }}">Title ({{ strtoupper($localeCode) }})</label>
+                                <input type="text" class="form-control" id="title_{{ $localeCode }}"name="{{ $localeCode }}[title]" value="{{ old("{$localeCode}.title") }}">
+                                @error("{$localeCode}.title")
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+
+                                <label for="content_{{ $localeCode }}">Content ({{ strtoupper($localeCode) }})</label>
+                                <textarea class="form-control" id="content_{{ $localeCode }}" name="{{ $localeCode }}[content]" rows="3">{{ old("{$localeCode}.content") }}</textarea>
+                                @error("{$localeCode}.content")
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endforeach
+
                         <div class="form-group">
                             <label for="image">Image</label>
-                            <input type="file" class="form-control-file" id="image" name="image" value="{{ old('image')}}>
+                            <input type="file" class="form-control-file" id="image" name="image"
+                                onchange="showPreview(event)">
+                            <img id="image_preview" style="display: none; margin-top: 10px;" width="100"
+                                alt="Preview image">
+                            @error('image')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
-                        @error('image')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
+
                         <div class="form-group">
                             <label for="parent">Parent Category</label>
-                            <select class="form-control" id="parent" name="parent" value="{{ old('parent')}}">
+                            <select class="form-control" id="parent" name="parent">
                                 <option value="">Main Category</option>
-                                @foreach($data as $category)
-                                    <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                @foreach ($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ old('parent') == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->title }}</option>
                                 @endforeach
                             </select>
+                            @error('parent')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
-                        @error('parent')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
                         <button type="submit" class="btn btn-primary">Add Category</button>
                     </form>
                 </div>
             </div>
         </section>
     </div>
+    <script>
+        function showPreview(event) {
+            const input = event.target;
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('image_preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 @endsection
