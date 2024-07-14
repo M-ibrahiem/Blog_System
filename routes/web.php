@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\MainController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
@@ -24,9 +25,12 @@ Route::group(
         'prefix' => LaravelLocalization::setLocale(),
         'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
     ], function(){
+
         Route::get('/', function () {
             return view('welcome');
         });
+
+        Route::get('/',[MainController::class,'index'])->name('home');
     });
 
     Route::prefix('dashboard')->middleware(['auth', 'verified', 'dashbordAccess'])->name('dashboard.')->group(function () {
