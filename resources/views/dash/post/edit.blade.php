@@ -5,8 +5,8 @@
 @section('content')
     <div class="col-xl-12">
         <section class="hk-sec-wrapper">
-            <h5 class="hk-sec-title">Add New Post</h5>
-            <p class="mb-25">Fill the form below to add a new Post</p>
+            <h5 class="hk-sec-title">Edit Post</h5>
+            <p class="mb-25">Fill the form below to edit the Post</p>
             <div class="row">
                 <div class="col-sm">
                     <form action="{{ route('dashboard.posts.update', $post->id) }}" method="POST"
@@ -16,10 +16,9 @@
                         <div class="form-group">
                             <label for="image">Image</label>
                             <input type="file" class="form-control-file" id="image"
-                                name="image"onchange="showPreview(event, 'image_preview')">
+                                name="image" onchange="showPreview(event, 'image_preview')">
                             @if ($post->getFirstMediaUrl('images'))
-                                <img src="{{ $post->getFirstMediaUrl('images') }}" alt="post image" id="image_preview"
-                                    width="100">
+                                <img src="{{ $post->getFirstMediaUrl('images') }}" alt="post image" id="image_preview" width="100">
                             @endif
                         </div>
                         @error('image')
@@ -40,8 +39,7 @@
                             <select class="form-control" id="parent" name="category_id">
                                 <option value="">Main Category</option>
                                 @foreach ($categories as $cat)
-                                    <option value="{{ $cat->id }}"
-                                        {{ $post->category_id == $cat->id ? 'selected' : '' }}>{{ $cat->title }}</option>
+                                    <option value="{{ $cat->id }}" {{ $post->category_id == $cat->id ? 'selected' : '' }}>{{ $cat->title }}</option>
                                 @endforeach
                             </select>
                             @error('category_id')
@@ -54,20 +52,19 @@
                         @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                             <div class="form-group">
                                 <label for="title_{{ $localeCode }}">Title ({{ strtoupper($localeCode) }})</label>
-                                <input type="text" class="form-control" id="title_{{ $localeCode }}"name="{{ $localeCode }}[title]" value="{{ $translations[$localeCode]['title'] }}">
+                                <input type="text" class="form-control" id="title_{{ $localeCode }}" name="{{ $localeCode }}[title]" value="{{ $translations[$localeCode]['title'] ?? '' }}">
                                 @error("{$localeCode}.title")
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
 
                                 <label for="content_{{ $localeCode }}">Content ({{ strtoupper($localeCode) }})</label>
-                                <textarea class="form-control" id="content_{{ $localeCode }}" name="{{ $localeCode }}[content]" rows="3">{{ $translations [$localeCode]['content'] }}</textarea>
+                                <textarea class="form-control" id="content_{{ $localeCode }}" name="{{ $localeCode }}[content]" rows="3">{{ $translations[$localeCode]['content'] ?? '' }}</textarea>
                                 @error("{$localeCode}.content")
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
 
-                                <label for="small_description_{{ $localeCode }}">Small Description
-                                    ({{ strtoupper($localeCode) }})</label>
-                                <textarea class="form-control" id="small_description_{{ $localeCode }}"name="{{ $localeCode }}[small_description]" rows="3">{{ $translations [$localeCode]['small_description'] }}</textarea>
+                                <label for="small_description_{{ $localeCode }}">Small Description ({{ strtoupper($localeCode) }})</label>
+                                <textarea class="form-control" id="small_description_{{ $localeCode }}" name="{{ $localeCode }}[small_description]" rows="3">{{ $translations[$localeCode]['small_description'] ?? '' }}</textarea>
                                 @error("{$localeCode}.small_description")
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -82,8 +79,7 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Add Post</button>
+                        <button type="submit" class="btn btn-primary">Update Post</button>
                     </form>
                 </div>
             </div>
