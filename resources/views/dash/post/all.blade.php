@@ -25,8 +25,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Image</th>
-                                    <th>Auther </th>
-                                    <th>Category </th>
+                                    <th>Author</th>
+                                    <th>Category</th>
                                     @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                                         <th>Title ({{ strtoupper($localeCode) }})</th>
                                         <th>Content ({{ strtoupper($localeCode) }})</th>
@@ -40,48 +40,44 @@
                                 @foreach ($data as $post)
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
-                                        <td>{{ $post->user->name  }}</td>
-                                        <td>{{ $post->category->title }}</td>
-                                        <td><img src="{{ $post->getFirstMediaUrl('images') }}" alt="post"
-                                                width="50"></td>
+                                        <td><img src="{{ $post->getFirstMediaUrl('images') }}" alt="post" width="50"></td>
+                                        <td>{{ $post->user ? $post->user->name : 'No user' }}</td>
+                                        <td>{{ $post->category ? $post->category->title : 'No Category' }}</td>
                                         @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                                             @php
-                                                $translations = $post->getTranslationsArray()[$localeCode];
-                                            @endphp
-                                            <td>{{  translation['title'] }}</td>
-                                            <td>{{  translation['content'] }}</td>
-                                            <td>{{  translation['small_descripion'] }}</td>
-                                            <td>{{  translation['tags'] }}</td>
+                                                $translation = $post->translate($localeCode);
+                                                $tags = $translation ? explode(',', $translation->tags) : [];
+                                                @endphp
+                                            <td>{{ $translation ? $translation->title : '' }}</td>
+                                            <td>{{ $translation ? $translation->content : '' }}</td>
+                                            <td>{{ $translation ? $translation->small_description : '' }}</td>
+                                            <td>
+                                                @foreach ($tags as $tag)
+                                                    <span class="badge badge-success badge-pill mt-15 mr-10">{{ trim($tag) }}</span>
+                                                @endforeach
+                                            </td>
                                         @endforeach
                                         <td>
                                             <div class="d-flex">
                                                 @if ($post->deleted_at)
-                                                    <a href="{{ route('dashboard.posts.restore', $post->id) }}"
-                                                        class="btn btn-icon btn-secondary btn-icon-style-3">
+                                                    <a href="{{ route('dashboard.posts.restore', $post->id) }}" class="btn btn-icon btn-secondary btn-icon-style-3">
                                                         <span class="btn-icon-wrap"><i class="fa fa-undo"></i></span>
                                                     </a>
-                                                    <form action="{{ route('dashboard.posts.erase', $post->id) }}"
-                                                        method="POST" style="display: inline;">
+                                                    <form action="{{ route('dashboard.posts.erase', $post->id) }}" method="POST" style="display: inline;">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button type="submit"
-                                                            class="btn btn-icon btn-info btn-icon-style-3"
-                                                            onclick="return confirm('Are you sure you want to delete this post?')">
+                                                        <button type="submit" class="btn btn-icon btn-info btn-icon-style-3" onclick="return confirm('Are you sure you want to delete this post?')">
                                                             <span class="btn-icon-wrap"><i class="icon-trash"></i></span>
                                                         </button>
                                                     </form>
                                                 @else
-                                                    <a href="{{ route('dashboard.posts.edit', $post->id) }}"
-                                                        class="btn btn-icon btn-secondary btn-icon-style-1 mr-2">
+                                                    <a href="{{ route('dashboard.posts.edit', $post->id) }}" class="btn btn-icon btn-secondary btn-icon-style-1 mr-2">
                                                         <span class="btn-icon-wrap"><i class="fa fa-pencil"></i></span> Edit
                                                     </a>
-                                                    <form action="{{ route('dashboard.posts.destroy', $post->id) }}"
-                                                        method="POST" style="display: inline;">
+                                                    <form action="{{ route('dashboard.posts.destroy', $post->id) }}" method="POST" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit"
-                                                            class="btn btn-icon btn-danger btn-icon-style-1"
-                                                            onclick="return confirm('Are you sure you want to delete this post?')">
+                                                        <button type="submit" class="btn btn-icon btn-danger btn-icon-style-1" onclick="return confirm('Are you sure you want to delete this post?')">
                                                             <span class="btn-icon-wrap"><i class="icon-trash"></i></span>
                                                             Delete
                                                         </button>

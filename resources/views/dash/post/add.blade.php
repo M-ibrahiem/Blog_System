@@ -61,15 +61,16 @@
                             @error("{$localeCode}.small_description")
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
-                            <div class="form-group">
-                                <label for="tags">Tags</label>
-                                <input type="text" name="tags" class="form-control" id="tags" placeholder="Enter tags, separated by commas" value="{{ old('tags') }}">
-                                @error('tags')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
                         </div>
                     @endforeach
+
+                    <div class="form-group">
+                        <label for="tags">Tags</label>
+                        <input type="text" name="tags" class="form-control" id="tags" placeholder="Enter tags, separated by commas" value="{{ old('tags') }}">
+                        @error('tags')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
 
                     <button type="submit" class="btn btn-primary">Add Post</button>
                 </form>
